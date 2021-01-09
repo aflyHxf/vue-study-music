@@ -1,14 +1,18 @@
 <template>
-    <div>
-       这是歌手页面
-    </div>
+  <div></div>
 </template>
 
 <script>
-    export default {
+// import Scroll from "../../base/scroll/Scroll";
+export default {
+  data() {
+    return {
 
-    }
+    };
+  },
+  components: {
+    // Scroll,
+  },
+};
 </script>
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

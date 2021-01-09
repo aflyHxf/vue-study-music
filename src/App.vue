@@ -1,23 +1,23 @@
 <template>
   <div id="app">
-      <Header />
-      <Tab />
+    <Header />
+    <Tab />
+    <keep-alive>
       <router-view />
+    </keep-alive>
   </div>
 </template>
 
 <script>
-import Header from './components/header/Header'
-import Tab from './components/tab/Tab'
+import Header from "./components/header/Header";
+import Tab from "./components/tab/Tab";
 
 export default {
-  components:{
+  components: {
     Header,
-    Tab
-  }
-}
+    Tab,
+  },
+};
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
