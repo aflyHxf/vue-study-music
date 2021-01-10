@@ -1,8 +1,6 @@
 <template>
   <div class="scroll-wrapper" ref="scroll">
-    <div class="scroll-content">
-      <slot></slot>
-    </div>
+    <slot></slot>
   </div>
 </template>
 
@@ -17,7 +15,7 @@ export default {
     }
   },
   beforeDestroy() {
-    this.bs.destroy()
+    this.bs && this.bs.destroy()
   },
   methods: {
     init() {

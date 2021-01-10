@@ -1,29 +1,31 @@
 <template>
   <div class="recommend">
     <div class="recommend-content">
-      <Scroll :list="discList">
-        <div class="slider-wrapper">
-          <div class="slider-content">
-            <Slider :recommends="recommends" />
+      <scroll :list="discList">
+        <div>
+          <div class="slider-wrapper">
+            <div class="slider-content">
+              <slider :recommends="recommends"></slider>
+            </div>
+          </div>
+          <div class="recommend-list">
+            <h1 class="list-title">热门歌单推荐</h1>
+            <ul>
+              <li v-for="item of discList" class="item" :key="item.dissid">
+                <div class="icon">
+                  <img width="60" height="60" v-lazy="item.imgurl" alt="" />
+                </div>
+                <div class="text">
+                  <p class="name" v-html="item.creator.name"></p>
+                  <p class="desc" v-html="item.dissname"></p>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
-        <div class="recommend-list">
-          <h1 class="list-title">热门歌单推荐</h1>
-          <ul>
-            <li v-for="item of discList" class="item" :key="item.dissid">
-              <div class="icon">
-                <img width="60" height="60" v-lazy="item.imgurl" alt="" />
-              </div>
-              <div class="text">
-                <p class="name" v-html="item.creator.name"></p>
-                <p class="desc" v-html="item.dissname"></p>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </Scroll>
+      </scroll>
     </div>
-    <Loading v-if="!discList.length" />
+    <loading v-if="!discList.length"></loading>
   </div>
 </template>
 
