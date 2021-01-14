@@ -28,6 +28,7 @@ export default {
     recommends: {
       type: Array,
       required: true,
+      default: () => [],
     },
   },
   data() {
@@ -37,8 +38,9 @@ export default {
     };
   },
   beforeDestroy() {
-    this.slide.destroy();
+    this.slide && this.slide.destroy();
   },
+
   methods: {
     init() {
       this.slide = new BScroll(this.$refs.slide, {
@@ -54,14 +56,15 @@ export default {
       });
       this.nums = this.recommends.length;
     },
+    refresh() {
+      this.slide && this.slide.refresh();
+    },
   },
   watch: {
-    recommends(newValue) {
-      if (newValue.length) {
-        setTimeout(() => {
-          this.init();
-        }, 20);
-      }
+    recommends() {
+      setTimeout(() => {
+        this.init();
+      }, 20);
     },
   },
 };

@@ -10,7 +10,6 @@ import { ERR_OK } from "../../api/config";
 import { getSingerList } from "../../api/singer";
 import Singer from "../../common/js/Singer";
 
-
 const HOT_NAME = "热门";
 const HOT_SINGER_LEN = 10;
 
@@ -18,8 +17,10 @@ export default {
   data() {
     return {
       singers: [],
+      isShow: false,
     };
   },
+
   created() {
     this._getSingerList();
   },

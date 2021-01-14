@@ -5,7 +5,7 @@
         <div>
           <div class="slider-wrapper">
             <div class="slider-content">
-              <slider :recommends="recommends"></slider>
+              <slider :recommends="recommends" ref="slider"></slider>
             </div>
           </div>
           <div class="recommend-list">
@@ -46,6 +46,11 @@ export default {
     this._getRecommend();
     this._getDiscList();
   },
+  activated () {
+      setTimeout(() => {
+        this.$refs.slider && this.$refs.slider.refresh()
+      }, 20)
+    },
   methods: {
     _getRecommend() {
       getRecommend().then((res) => {
