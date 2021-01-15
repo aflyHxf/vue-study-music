@@ -35,6 +35,7 @@ import Slider from "../../base/slider/Slider";
 import Loading from "../../base/loading/Loading";
 import { ERR_OK } from "../../api/config";
 import { getRecommend, getDiscList } from "../../api/recommend";
+
 export default {
   data() {
     return {
@@ -46,11 +47,11 @@ export default {
     this._getRecommend();
     this._getDiscList();
   },
-  activated () {
-      setTimeout(() => {
-        this.$refs.slider && this.$refs.slider.refresh()
-      }, 20)
-    },
+  activated() {
+    setTimeout(() => {
+      this.$refs.slider && this.$refs.slider.refresh();
+    }, 20);
+  },
   methods: {
     _getRecommend() {
       getRecommend().then((res) => {

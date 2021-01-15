@@ -1,14 +1,16 @@
 <template>
   <div class="singer">
-    <list-view :singers="singers"></list-view>
+    <list-view :singers="singers" @select="selectSinger"></list-view>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 import ListView from "../../base/listview/ListView";
+import Singer from "../../common/js/Singer";
 import { ERR_OK } from "../../api/config";
 import { getSingerList } from "../../api/singer";
-import Singer from "../../common/js/Singer";
+import { mapMutations } from "vuex";
 
 const HOT_NAME = "热门";
 const HOT_SINGER_LEN = 10;
@@ -25,6 +27,13 @@ export default {
     this._getSingerList();
   },
   methods: {
+    selectSinger(singer) {
+      this.$router.push({
+        path: `/singer/${singer.id}`,
+      });
+      // 将当前选中的歌手信息 存入到store中
+      this.setSinger(singer);
+    },
     _getSingerList() {
       getSingerList().then((res) => {
         if (res.code === ERR_OK) {
@@ -84,6 +93,9 @@ export default {
       });
       return [...hot, ...ret];
     },
+    ...mapMutations({
+      setSinger: "SET_SINGER",
+    }),
   },
   components: {
     ListView,

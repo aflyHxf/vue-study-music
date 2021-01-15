@@ -20,6 +20,7 @@
             v-for="item of group.items"
             class="list-group-item"
             :key="item.id"
+            @click="selectItem(item)"
           >
             <img class="avatar" v-lazy="item.avatar" alt="" />
             <span class="name">{{ item.name }}</span>
@@ -49,13 +50,16 @@
     <div class="list-fixed" ref="listFixed" v-show="fixedTitle">
       <h1 class="fixed-title">{{ fixedTitle }}</h1>
     </div>
-    <loading v-if="!singers.length"></loading>
+    <loading v-show="!singers.length"></loading>
   </scroll>
 </template>
 <script>
 import Scroll from "../scroll/Scroll";
+import Loading from "../loading/Loading.vue";
+
 import { getData } from "../../common/js/dom";
-import Loading from '../loading/Loading.vue';
+// import { mapActions, mapGetters, mapMutations, mapState } from "vuex";
+
 const ANCHOR_HEIGHT = 18;
 const TITLE_HEIGHT = 30;
 
@@ -89,6 +93,11 @@ export default {
     },
   },
   methods: {
+    // 点击选中的歌手
+    selectItem(singer) {
+      this.$emit('select', singer)
+    },
+
     onShortcutTouchStart(e) {
       // 获取touch开始位置的index
       const anchorIndex = parseInt(getData(e.target, "index"));
@@ -182,9 +191,9 @@ export default {
   },
   components: {
     Scroll,
-    Loading
-  }
-}
+    Loading,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
