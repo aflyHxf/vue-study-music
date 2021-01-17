@@ -1,6 +1,12 @@
 <template>
   <transition appear name="slide">
-    <div class="singer-detail">这是歌手详情页</div>
+    <div class="singer-detail">
+      <music-list
+        :bg-image="bgImage"
+        :title="title"
+        :songs="songs"
+      ></music-list>
+    </div>
   </transition>
 </template>
 
@@ -8,6 +14,12 @@
 import { getSingerDetail } from "../../api/singer";
 import { mapGetters } from "vuex";
 import { ERR_OK } from "../../api/config";
+import {
+  createSong,
+  isValidMusic,
+  processSongsUrl,
+} from "../../common/js/Song";
+import MusicList from "../music-list/MusicList.vue";
 
 export default {
   data() {
@@ -16,6 +28,12 @@ export default {
     };
   },
   computed: {
+    bgImage() {
+      return this.singer.avatar;
+    },
+    title() {
+      return this.singer.name;
+    },
     ...mapGetters(["singer"]),
   },
   created() {
@@ -30,10 +48,26 @@ export default {
       }
       getSingerDetail(this.singer.id).then((res) => {
         if (res.code === ERR_OK) {
-          console.log(res.data.list);
+          processSongsUrl(this._normalizeSong(res.data.list)).then((songs) => {
+            this.songs = songs;
+            console.log(this.songs);
+          });
         }
       });
     },
+    _normalizeSong(list) {
+      let ret = [];
+      list.forEach((item) => {
+        const { musicData } = item;
+        if (isValidMusic(musicData)) {
+          ret.push(createSong(musicData));
+        }
+      });
+      return ret;
+    },
+  },
+  components: {
+    MusicList,
   },
 };
 </script>

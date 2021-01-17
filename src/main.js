@@ -9,6 +9,7 @@ import VueLazyload from "vue-lazyload";
 Vue.use(VueLazyload, {
   loading: require("./common/image/default.png")
 });
+
 import "./common/scss/index.scss";
 
 fastclick.attach(document.body);

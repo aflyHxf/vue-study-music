@@ -1,3 +1,4 @@
+import { getSongsUrl } from "../../api/song";
 export default class Song {
   constructor({ id, mid, singer, name, album, duration, image, url }) {
     this.id = id;
@@ -7,7 +8,6 @@ export default class Song {
     this.album = album;
     this.duration = duration;
     this.image = image;
-    this.filename = `C400${this.mid}.m4a`;
     this.url = url;
   }
 }
@@ -32,4 +32,37 @@ function filterSinger(singer) {
     ret.push(s.name);
   });
   return ret.join("/");
+}
+
+export function isValidMusic(musicData) {
+  return (
+    musicData.songid &&
+    musicData.songmid &&
+    (!musicData.pay || musicData.pay.payalbumprice === 0)
+  );
+}
+
+/**
+ * 获取处理之后合法的歌曲路径
+ * @param {当前歌曲实例} songs
+ */
+export function processSongsUrl(songs) {
+  if (!songs.length) {
+    return Promise.resolve(songs);
+  }
+
+  return getSongsUrl(songs).then((purlMap) => {
+    songs = songs.filter((song) => {
+      const purl = purlMap[song.mid];
+      if (purl) {
+        song.url =
+          purl.indexOf("http") === -1
+            ? `http://dl.stream.qqmusic.qq.com/${purl}`
+            : purl;
+        return true;
+      }
+      return false;
+    });
+    return songs;
+  });
 }

@@ -1,17 +1,39 @@
 <template>
   <div class="music-list">
-      <div class="back">
-          <i class="icon-back"></i>
-      </div>
-      <h1 class="title"></h1>
-      <div class="bg-image">
-          <div class="filter"></div>
-      </div>
+    <div class="back">
+      <i class="icon-back"></i>
+    </div>
+    <h1 class="title" v-html="title"></h1>
+    <div class="bg-image" :style="bgStyle">
+      <div class="filter"></div>
+    </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    bgImage: {
+      type: String,
+      default: "",
+    },
+
+    title: {
+      type: String,
+      default: "",
+    },
+
+    songs: {
+      type: Array,
+      required: true,
+    },
+  },
+  computed: {
+    bgStyle() {
+      return `background-image: url('${this.bgImage}')`;
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
