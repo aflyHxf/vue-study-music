@@ -1,16 +1,46 @@
 <template>
   <div class="music-list">
-    <div class="back">
+    <div class="back" @click="back">
       <i class="icon-back"></i>
     </div>
     <h1 class="title" v-html="title"></h1>
-    <div class="bg-image" :style="bgStyle">
-      <div class="filter"></div>
+    <div class="bg-image" :style="bgStyle" ref="bgImage">
+      <div class="filter" ref="filter"></div>
+      <div class="play-wrapper">
+        <div class="play" v-show="songs.length" ref="playBtn">
+          <i class="icon-play"></i>
+          <span class="text">随机播放全部</span>
+        </div>
+      </div>
     </div>
+    <div class="bg-layer" ref="layer"></div>
+    <scroll
+      :probe-type="3"
+      :listen-scroll="true"
+      @scroll="scroll"
+      :list="songs"
+      class="list"
+      ref="list"
+    >
+      <div class="song-list-wrapper">
+        <song-list :songs="songs"></song-list>
+      </div>
+    </scroll>
+    <loading v-if="!songs.length"></loading>
   </div>
 </template>
 
 <script>
+import Loading from "../../base/loading/Loading.vue";
+import Scroll from "../../base/scroll/Scroll.vue";
+import SongList from "../../base/song-list/SongList.vue";
+import { prefixStyle } from "../../common/js/dom";
+
+const transform = prefixStyle("transform");
+const backdrop = prefixStyle("backdrop-filter");
+
+const RESERVED_HEIGHT = 40;
+
 export default {
   props: {
     bgImage: {
@@ -28,11 +58,68 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      scrollY: -1,
+    };
+  },
   computed: {
     bgStyle() {
       return `background-image: url('${this.bgImage}')`;
-    }
-  }
+    },
+  },
+  methods: {
+    scroll(y) {
+      this.scrollY = y;
+    },
+    back() {
+      this.$router.back();
+    },
+  },
+  mounted() {
+    // 将scroll的top 等于 图片高
+    this.bgImageClientHeight = this.$refs.bgImage.clientHeight;
+    this.minTranslateY = -this.bgImageClientHeight + RESERVED_HEIGHT;
+    this.$refs.list.$el.style.top = `${this.bgImageClientHeight}px`;
+  },
+  watch: {
+    scrollY(newY) {
+      // 取大小
+      const minTranslateY = Math.max(newY, this.minTranslateY);
+      const _style = this.$refs.bgImage.style;
+
+      // 上面的情况会将头部的歌手名和返回按钮盖住，所以需要调整图片的zIndex和高度为RESERVED_HEIGHT;
+      this.$refs.layer.style[
+        transform
+      ] = `translate3d(0,${minTranslateY}px, 0)`;
+      let zIndex = 0;
+      let scale = 1;
+      let blur = 0;
+      const precent = Math.abs(newY / this.bgImageClientHeight);
+      if (newY > 0) {
+        zIndex = 10;
+        scale = 1 + precent;
+      } else {
+        blur = Math.min(precent * 20, 20);
+      }
+
+      this.$refs.filter.style[backdrop] = `blur(${blur})`;
+
+      if (newY < minTranslateY) {
+        zIndex = 10;
+        _style.paddingTop = 0;
+        _style.height = RESERVED_HEIGHT + "px";
+        this.$refs.playBtn.style.display = "none";
+      } else {
+        _style.paddingTop = "70%";
+        _style.height = 0;
+        this.$refs.playBtn.style.display = "";
+      }
+      _style.zIndex = zIndex;
+      _style[transform] = `scale(${scale})`;
+    },
+  },
+  components: { Scroll, SongList, Loading },
 };
 </script>
 
@@ -100,11 +187,11 @@ export default {
           vertical-align: middle;
           margin-right: 6px;
           font-size: $font-size-medium-x;
-          .text {
-            display: inline-block;
-            vertical-align: middle;
-            font-size: $font-size-small;
-          }
+        }
+        .text {
+          display: inline-block;
+          vertical-align: middle;
+          font-size: $font-size-small;
         }
       }
     }
@@ -133,13 +220,6 @@ export default {
     background: $color-background;
     .song-list-wrapper {
       padding: 20px 30px;
-    }
-
-    .loading-container {
-      position: absolute;
-      width: 100%;
-      top: 50%;
-      transform: translateY(-50%);
     }
   }
 }

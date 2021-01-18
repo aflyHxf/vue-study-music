@@ -1,5 +1,5 @@
 <template>
-  <div class="scroll-wrapper" ref="scroll">
+  <div ref="scroll">
     <slot></slot>
   </div>
 </template>
@@ -9,7 +9,7 @@ import BScroll from '@better-scroll/core'
 export default {
   props: {
     list: {
-      type: Array,
+      type:Array,
       required: true
     },
 
@@ -33,6 +33,7 @@ export default {
   },
   methods: {
     init() {
+      if(!this.$refs.scroll) return;
       this.scroll = new BScroll(this.$refs.scroll, {
         probeType: this.probeType
       })
@@ -55,17 +56,9 @@ export default {
   watch: {
     list() {
       setTimeout(()=> {
-        this.refresh()
-      }, 300)
+        this.init()
+      }, 30)
     }
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.scroll-wrapper {
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-</style>
